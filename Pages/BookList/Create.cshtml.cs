@@ -13,6 +13,8 @@ namespace BookList_Razor.Pages.BookList
         private AppDbContext context;
         [BindProperty]
         public Book Book { get; set; }
+        [TempData]
+        public string Message { get; set; }
 
         public CreateModel(AppDbContext Context)
         {
@@ -28,6 +30,7 @@ namespace BookList_Razor.Pages.BookList
             }
             context.Books.Add(Book);
             await context.SaveChangesAsync();
+            Message = $"New book added succesfylly {Book.ISBN} - {Book.Title}";
             
             return RedirectToPage("Index");
         }

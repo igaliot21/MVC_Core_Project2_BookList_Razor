@@ -13,7 +13,9 @@ namespace BookList_Razor.Pages.BookList
     {
         private AppDbContext context;
         public IEnumerable<Book> Books { get; set; }
-        
+        [TempData]
+        public string Message { get; set; }
+
         public IndexModel(AppDbContext Context)
         {
             this.context = Context;
@@ -22,6 +24,15 @@ namespace BookList_Razor.Pages.BookList
         public async Task OnGet()
         {
             Books = await context.Books.ToListAsync();
+        }
+        public async Task<IActionResult> OnPostDelete(int id) 
+        {
+            var book = context.Books.Where(b => b.Id == id).Single();
+            context.Books.Remove(book);
+            await context.SaveChangesAsync();
+            Message = $"Book {book.ISBN} - {book.Title} deleted successfylly";
+
+            return RedirectToPage();
         }
     }
 }
